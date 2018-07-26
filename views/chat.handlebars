@@ -1,0 +1,37 @@
+<div id="content" class="container">
+    <input type="text" id="nombre" value="{{nombre}}" hidden>
+    <h4>Chat</h4>
+    <div style="border-style:double" readonly class="form-control" id="messages"></div>
+    <hr>
+    <input type="text" placeholder="Escribe algo" class="form-control" id="inputMsg">       
+</div>
+<script>
+    $('document').ready(()=>{
+        axios.get('https://socketstest.herokuapp.com/mensajes').then((res)=>{
+            var socket = io();
+            var username = $('#nombre').val() || "usuario indefinido", msgCount = parseInt(0), newmsgCount = parseInt(0);
+            res.data.forEach(element => {
+                msgCount++;
+                $('#messages').append(`<i id="msg${msgCount}">${element}</i><br/>`);
+                $(`#msg${msgCount}`).hide().show(200);
+            });
+            $('#inputMsg').focus();
+            $('#inputMsg').keydown((e)=>{
+                if(e.which == 13){
+                    socket.emit('chat message', '[' + username + ']: ' + $('#inputMsg').val());
+                    $('#inputMsg').val('');
+                }
+            })
+            socket.on('chat message', function (msg) {
+                newmsgCount++;
+                $('#messages').append(`<i id="newmsg${newmsgCount}">${msg}</i><br/>`)
+                $(`#newmsg${newmsgCount}`).hide().show(200);
+            });
+        }).catch((err)=>{
+            $('#content').css('color','red')
+            $('#content').html("<h3>Error trying to connect with the server, please try again by reloading the page</h3> <b>"+err+"</b>");
+        })        
+    })
+
+
+</script>

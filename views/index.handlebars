@@ -1,0 +1,17 @@
+<div id="content" class="container">
+    <div class="row">
+        <div class="col">
+            <form onsubmit="return doit()">
+                <h1 style="text-align: center">Chat</h1>
+                <hr>
+                <input id="uname" type="text" placeholder="Escribe tu nombre" class="form-control" required>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function doit(){
+        window.open("/chat/"+$('#uname').val(),"Chat","width=400,height=800");
+        return false;
+    }
+</script>
